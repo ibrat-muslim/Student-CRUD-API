@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using studentApi.Dtos;
+using studentApi.Entities;
 
 namespace studentApi.Controllers;
 
@@ -47,14 +47,21 @@ public class StudentsController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult Create(Student student)
+    public IActionResult Create([FromForm]Dtos.Student student)
     {        
-        _students.Add(student);
+        var entity = new Student()
+        {
+            Id = Guid.NewGuid(),
+            Name = student.Name,
+            Grade = student.Grade,
+            Birthdate = student.Birthdate
+        };
+        _students.Add(entity);
         return CreatedAtAction(nameof(Create), student);
     }
 
     [HttpPut]
-    public IActionResult Update(Guid id, Student student)
+    public IActionResult Update(Guid id, [FromForm]Dtos.Student student)
     {
         var entity = _students.FirstOrDefault(s => s.Id == id);
         
